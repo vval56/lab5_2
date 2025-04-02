@@ -1,5 +1,6 @@
 #include "stack_int.h"
 #include "two_stacks.h"
+#include "arithmetic_expression.h"
 
 // Создать стек для целых чисел. Максимальный размер стека вводится с экрана. Найти сумму
 // после максимального элемента стека.
@@ -16,7 +17,38 @@
 //Могильный Владислав Александрович, 30.03.2025
 
 int main(){
+    int choice;
+    char *line = NULL;
+    size_t len = 0;
 
-    stack_int();
-    two_stacks_task();
+    puts("Выберите задание для выполнения:");
+    puts("1. 1-е задание");
+    puts("2. 2-е задание");
+    puts("3. 3-е задание");
+    puts("Ваш выбор: ");
+
+    do {
+        if (getline(&line, &len, stdin) == -1) {
+            puts("Ошибка ввода");
+            free(line);
+            return 0;
+        }
+    } while (!check_int(&choice, line) || choice <= 0);
+
+    switch(choice) {
+        case 1:
+            stack_int();
+            break;
+        case 2:
+            two_stacks_task();
+            break;
+        case 3:
+            solve_expression("expression.txt");
+            break;
+        default:
+            printf("Неверный выбор! Допустимые значения: 1-3\n");
+            return 1;
+    }
+
+    return 0;
 }

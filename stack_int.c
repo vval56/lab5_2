@@ -1,8 +1,4 @@
 #include "stack_int.h"
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-#include <limits.h>
 
 int check_int(int *number, char *line) {
     if (line == NULL || line[0] == '\n') {
