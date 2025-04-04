@@ -103,7 +103,6 @@ void error_in_file(int value) {
 
 int priority(char op) {
     switch(op) {
-        case '^': return 4;
         case '*':
         case '/': return 3;
         case '+':
@@ -255,9 +254,46 @@ void validate_expression(const char *line, const char *filename) {
             error_in_file(i);
             exit(1);
         }
+        // if(!(my_isdigit(line[i]) || line[0] == '(' || line[0] == '-')){
+        //     puts("Неверный ввод числа");
+        //     error_in_file(0);
+        //     exit(1);
+        // }
+        if(line[i] == '+' || line[i] == '*' || line[i] == '/'){
+            if(line[i + 1] == '+' || line[i + 1] == '*' || line[i + 1] == '/' || line[i + 1] == '-' || line[i + 1] == ')'){
+                puts("лишние операнды");
+                error_in_file(i + 1);
+                exit(1);
+            }
+        }
+        if(line[i] == ')' && my_isdigit(line[i])){
+            puts("лишняя скобка");
+            error_in_file(i);
+            exit(1);
+        }
+        if(line[i] == '('){
+            if(line[i + 1] == '+' || line[i + 1] == '*' || line[i + 1] == '/'){
+                puts("лишняя скобка");
+                error_in_file(i);
+                exit(1);
+            }
+        }
+        if(my_isdigit(line[i])){
+            if(line[i + 1] == '('){
+                puts("лишняя скобка");
+                error_in_file(i + 1);
+                exit(1);
 
+            }
+        }
+        if(line[i] == '/' && line[i + 1] == '0'){
+            puts("Деление на нуль");
+            error_in_file(i);
+            exit(1);
+        }
         i++;
     }
+
 
     if (paren_count != 0) {
         puts("Несбалансированные скобки");
