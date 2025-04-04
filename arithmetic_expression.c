@@ -236,6 +236,7 @@ void remove_spaces(char *line) {
 void validate_expression(const char *line, const char *filename) {
     int i = 0;
     int paren_count = 0;
+    int has_decimal_point = 0;
 
     while (line[i] != '\0') {
         if (!my_isdigit(line[i]) && line[i] != '+' && line[i] != '-' &&
@@ -254,46 +255,67 @@ void validate_expression(const char *line, const char *filename) {
             error_in_file(i);
             exit(1);
         }
-        // if(!(my_isdigit(line[i]) || line[0] == '(' || line[0] == '-')){
-        //     puts("Неверный ввод числа");
-        //     error_in_file(0);
-        //     exit(1);
-        // }
-        if(line[i] == '+' || line[i] == '*' || line[i] == '/'){
-            if(line[i + 1] == '+' || line[i + 1] == '*' || line[i + 1] == '/' || line[i + 1] == '-' || line[i + 1] == ')'){
+
+        if (line[i] == '.') {
+            if (has_decimal_point) {
+                puts("В числе не может быть больше одной точки");
+                error_in_file(i);
+                exit(1);
+            }
+            has_decimal_point = 1;
+
+            if (i == 0 || !my_isdigit(line[i-1]) ||
+                (line[i+1] != '\0' && !my_isdigit(line[i+1]))) {
+                puts("Точка должна быть между цифрами");
+                error_in_file(i);
+                exit(1);
+            }
+        }
+        else if (!my_isdigit(line[i]) && line[i] != ' ') {
+            has_decimal_point = 0;
+        }
+
+        if (line[i] == '+' || line[i] == '*' || line[i] == '/') {
+            if (line[i + 1] == '+' || line[i + 1] == '*' || line[i + 1] == '/' ||
+                line[i + 1] == '-' || line[i + 1] == ')') {
                 puts("лишние операнды");
                 error_in_file(i + 1);
                 exit(1);
             }
         }
-        if(line[i] == ')' && my_isdigit(line[i])){
+
+        if (line[i] == ')' && my_isdigit(line[i+1])) {
             puts("лишняя скобка");
             error_in_file(i);
             exit(1);
         }
-        if(line[i] == '('){
-            if(line[i + 1] == '+' || line[i + 1] == '*' || line[i + 1] == '/'){
+
+        if (line[i] == '(') {
+            if (line[i + 1] == '+' || line[i + 1] == '*' || line[i + 1] == '/') {
                 puts("лишняя скобка");
                 error_in_file(i);
                 exit(1);
             }
         }
-        if(my_isdigit(line[i])){
-            if(line[i + 1] == '('){
+
+        if (my_isdigit(line[i])) {
+            if (line[i + 1] == '(') {
                 puts("лишняя скобка");
                 error_in_file(i + 1);
                 exit(1);
-
             }
         }
-        if(line[i] == '/' && line[i + 1] == '0'){
-            puts("Деление на нуль");
-            error_in_file(i);
-            exit(1);
+
+        if (line[i] == '/' && line[i + 1] == '0') {
+            if (i == 0 || !my_isdigit(line[i-1])) {
+                puts("Деление на нуль");
+                error_in_file(i);
+                exit(1);
+            }
         }
+
         i++;
     }
-
 
     if (paren_count != 0) {
         puts("Несбалансированные скобки");
