@@ -5,12 +5,14 @@
             "label": "C/C++: gcc сборка активного файла",
             "command": "/usr/bin/gcc",
             "args": [
-                "-fdiagnostics-color=always",
-                "-g",
-                "${file}",
-                "-o",
-                "${fileDirname}/${fileBasenameNoExtension}"
-            ],
+                    "-g",
+                    "${workspaceFolder}/main.c",
+                    "${workspaceFolder}/stack_int.c",
+                    "${workspaceFolder}/two_stacks.c",
+                    "${workspaceFolder}/arithmetic_expression.c",
+                    "-o",
+                    "${workspaceFolder}/main"
+                ],
             "options": {
                 "cwd": "${fileDirname}"
             },

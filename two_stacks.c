@@ -68,24 +68,29 @@ void stack_input_ascending(STACK *stack) {
     free(line);
 }
 
-void merge_stacks(STACK *desc, STACK *asc, STACK *result) {
-    int top_desc = desc->top - 1;
-    int top_asc = asc->top - 1;
+void merge_stacks(STACK *asc, STACK *desc, STACK *result) {
+    STACK temp_desc = *desc;
+    STACK temp_asc = *asc;
 
-    while (top_desc >= 0 && top_asc >= 0) {
-        if (desc->stack_queue[top_desc] >= asc->stack_queue[top_asc]) {
-            stack_push(result, desc->stack_queue[top_desc--]);
+    STACK reversed_asc;
+    stack_create(&reversed_asc, temp_asc.capacity);
+    while (!stack_is_empty(&temp_asc)) {
+        stack_push(&reversed_asc, stack_pop(&temp_asc));
+    }
+
+    while (!stack_is_empty(&temp_desc) && !stack_is_empty(&reversed_asc)) {
+        if (temp_desc.stack_queue[temp_desc.top - 1] > reversed_asc.stack_queue[reversed_asc.top - 1]) {
+            stack_push(result, stack_pop(&temp_desc));
         } else {
-            stack_push(result, asc->stack_queue[top_asc--]);
+            stack_push(result, stack_pop(&reversed_asc));
         }
     }
 
-    while (top_desc >= 0) {
-        stack_push(result, desc->stack_queue[top_desc--]);
+    while (!stack_is_empty(&temp_desc)) {
+        stack_push(result, stack_pop(&temp_desc));
     }
-
-    while (top_asc >= 0) {
-        stack_push(result, asc->stack_queue[top_asc--]);
+    while (!stack_is_empty(&reversed_asc)) {
+        stack_push(result, stack_pop(&reversed_asc));
     }
 }
 
